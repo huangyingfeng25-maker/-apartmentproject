@@ -17,10 +17,14 @@ import java.util.List;
 @RestController
 public class PaymentTypeController {
 
+    @Autowired
+    private PaymentTypeService paymentTypeService;
+
     @Operation(summary = "查询全部支付方式列表")
     @GetMapping("list")
     public Result<List<PaymentType>> listPaymentType() {
-        return Result.ok();
+        List<PaymentType> list = paymentTypeService.list();
+        return Result.ok(list);
     }
 
     @Operation(summary = "保存或更新支付方式")
@@ -34,7 +38,6 @@ public class PaymentTypeController {
     public Result deletePaymentById(@RequestParam Long id) {
         return Result.ok();
     }
-
 }
 
 
