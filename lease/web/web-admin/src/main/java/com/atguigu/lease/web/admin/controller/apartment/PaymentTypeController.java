@@ -38,6 +38,13 @@ public class PaymentTypeController {
     public Result deletePaymentById(@RequestParam Long id) {
         return Result.ok();
     }
+
+    @Operation(summary = "根据id查询支付方式 ")
+    @GetMapping("/getPaymentType/{id}")
+    public Result getPaymentType(@PathVariable Long id){
+        PaymentType paymentType = paymentTypeService.getById(id);
+        return Result.ok(paymentType);
+    }
 }
 
 
