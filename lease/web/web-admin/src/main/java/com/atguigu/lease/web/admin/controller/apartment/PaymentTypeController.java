@@ -30,7 +30,12 @@ public class PaymentTypeController {
     @Operation(summary = "保存或更新支付方式")
     @PostMapping("saveOrUpdate")
     public Result saveOrUpdatePaymentType(@RequestBody PaymentType paymentType) {
-        return Result.ok();
+        boolean isSuccess = paymentTypeService.saveOrUpdate(paymentType);
+        if(isSuccess){
+            return Result.ok();
+        }else {
+            return Result.fail();
+        }
     }
 
     @Operation(summary = "根据ID删除支付方式")
