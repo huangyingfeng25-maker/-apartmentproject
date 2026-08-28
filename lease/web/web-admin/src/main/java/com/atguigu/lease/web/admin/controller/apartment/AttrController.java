@@ -7,6 +7,7 @@ import com.atguigu.lease.model.entity.AttrValue;
 import com.atguigu.lease.web.admin.service.AttrKeyService;
 import com.atguigu.lease.web.admin.service.AttrValueService;
 import com.atguigu.lease.web.admin.vo.attr.AttrKeyVo;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,13 +52,26 @@ public class AttrController {
     @Operation(summary = "根据id删除属性名称")
     @DeleteMapping("key/deleteById")
     public Result removeAttrKeyById(@RequestParam Long attrKeyId) {
+        //删除属性名称
+        attrValueService.removeById(attrKeyId);
+
+        //删除属性值
+        //根据attr_key_id删除属性值
+        //DELETE FROM attr_value where attr_key_id=1
+        LambdaQueryWrapper<AttrValue>wrapper=new LambdaQueryWrapper<>();
+        wrapper.eq(AttrValue::getAttrKeyId,attrKeyId);
+        attrValueService.remove(wrapper);
         return Result.ok();
     }
 
     @Operation(summary = "根据id删除属性值")
     @DeleteMapping("value/deleteById")
     public Result removeAttrValueById(@RequestParam Long id) {
-        return Result.ok();
+        boolean isSuccess = attrKeyService.removeById(id);
+        if (isSuccess) {
+            return Result.ok();
+        } else {
+            return Result.fail();
+        }
     }
-
 }
