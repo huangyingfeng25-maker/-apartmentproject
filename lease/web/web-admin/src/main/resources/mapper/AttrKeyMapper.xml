@@ -4,4 +4,26 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.atguigu.lease.web.admin.mapper.AttrKeyMapper">
 
+    <!--自定义返回结果-->
+    <resultMap id="BaseResultMap" type="com.atguigu.lease.web.admin.vo.attr.AttrKeyVo">
+        <id property="id" column="id"></id>
+        <result property="name" column="key_name"></result>
+        <collection property="attrValueList" ofType="com.atguigu.lease.model.entity.AttrValue">
+            <id property="id" column="value_id"></id>
+            <result property="name" column="value_name"/>
+            <result property="attrKeyId" column="key_id"/>
+        </collection>
+    </resultMap>
+    <!--查询全部属性名 称和属性值列表-->
+    <select id="listAttrInfo" resultMap="BaseResultMap">
+        select k.id,
+               k.name        key_name,
+               v.id          value_id,
+               v.name        value_name,
+               v.attr_key_id key_id
+        from attr_key k
+                 left join attr_value v on k.id = v.attr_key_id and v.is_deleted = 0
+        where k.is_deleted = 0
+    </select>
+
 </mapper>
