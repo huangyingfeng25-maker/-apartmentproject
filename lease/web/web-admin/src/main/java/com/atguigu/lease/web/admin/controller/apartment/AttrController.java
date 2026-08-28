@@ -53,7 +53,7 @@ public class AttrController {
     @DeleteMapping("key/deleteById")
     public Result removeAttrKeyById(@RequestParam Long attrKeyId) {
         //删除属性名称
-        attrValueService.removeById(attrKeyId);
+        attrKeyService.removeById(attrKeyId);
 
         //删除属性值
         //根据attr_key_id删除属性值
