@@ -26,15 +26,17 @@ public class AttrController {
     @Autowired
     private AttrValueService attrValueService;
 
-    @Operation(summary = "新增或更新属性名称")
+    @Operation(summary = "保存或更新属性名称")
     @PostMapping("key/saveOrUpdate")
     public Result saveOrUpdateAttrKey(@RequestBody AttrKey attrKey) {
+        attrKeyService.saveOrUpdate(attrKey);
         return Result.ok();
     }
 
-    @Operation(summary = "新增或更新属性值")
+    @Operation(summary = "保存或更新属性值")
     @PostMapping("value/saveOrUpdate")
     public Result saveOrUpdateAttrValue(@RequestBody AttrValue attrValue) {
+        attrValueService.saveOrUpdate(attrValue);
         return Result.ok();
     }
 
