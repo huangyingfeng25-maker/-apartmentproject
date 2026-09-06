@@ -14,6 +14,8 @@ import java.util.List;
 */
 public interface FeeValueMapper extends BaseMapper<FeeValue> {
 
+    //根据公寓id查询杂费数据
+    List<FeeValueVo> findFeeValueListByApartmentId(Long id);
 }
 
 

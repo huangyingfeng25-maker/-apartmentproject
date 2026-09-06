@@ -13,6 +13,8 @@ import java.util.List;
 */
 public interface FacilityInfoMapper extends BaseMapper<FacilityInfo> {
 
+    //根据公寓id查询公寓配套数据
+    List<FacilityInfo> findFacilityListByApartmentId(Long id);
 }
 
 

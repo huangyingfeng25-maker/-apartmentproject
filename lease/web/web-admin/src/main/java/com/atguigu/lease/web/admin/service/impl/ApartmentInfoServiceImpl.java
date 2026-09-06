@@ -2,12 +2,15 @@ package com.atguigu.lease.web.admin.service.impl;
 
 import com.atguigu.lease.model.entity.*;
 import com.atguigu.lease.model.enums.ItemType;
-import com.atguigu.lease.web.admin.mapper.ApartmentInfoMapper;
+import com.atguigu.lease.web.admin.mapper.*;
 import com.atguigu.lease.web.admin.service.*;
+import com.atguigu.lease.web.admin.vo.apartment.ApartmentDetailVo;
 import com.atguigu.lease.web.admin.vo.apartment.ApartmentSubmitVo;
+import com.atguigu.lease.web.admin.vo.fee.FeeValueVo;
 import com.atguigu.lease.web.admin.vo.graph.GraphVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -34,6 +37,45 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
     private ApartmentFeeValueService apartmentFeeValueService;
     @Autowired
     private GraphInfoService graphInfoService;
+    @Autowired
+    private FacilityInfoMapper facilityInfoMapper;
+    @Autowired
+    private LabelInfoMapper labelInfoMapper;
+    @Autowired
+    private FeeValueMapper feeValueMapper;
+    @Autowired
+    private GraphInfoMapper graphInfoMapper;
+
+
+    //根据ID获取公寓详细信息
+    @Override
+    public ApartmentDetailVo getDetailById(Long id) {
+        ApartmentInfo apartmentInfo = this.getById(id);
+        if (apartmentInfo==null){
+            return null;
+        }
+        //2 根据公寓id查询公寓配套数据
+        List<FacilityInfo> facilityInfoList = facilityInfoMapper.findFacilityListByApartmentId(id);
+
+        //3.根据公寓id查询标签数据
+        List<LabelInfo> labelInfoList=labelInfoMapper.findLabelListByApartmentId(id);
+
+        //4 根据公寓id查询杂费数据
+        List<FeeValueVo> feeValueVoList=feeValueMapper.findFeeValueListByApartmentId(id);
+
+        //5 根据公寓id查询图片数据
+        List<GraphVo> graphVoList=graphInfoMapper.selectGraphListByApartmentId(ItemType.APARTMENT,id);
+
+        //6 把上面查询出来所有数据封装到ApartmentDetailVo对象
+        ApartmentDetailVo apartmentDetailVo=new ApartmentDetailVo();
+        BeanUtils.copyProperties(apartmentInfo,apartmentDetailVo);
+        apartmentDetailVo.setFacilityInfoList(facilityInfoList);
+        apartmentDetailVo.setLabelInfoList(labelInfoList);
+        apartmentDetailVo.setFeeValueVoList(feeValueVoList);
+        apartmentDetailVo.setGraphVoList(graphVoList);
+
+        return apartmentDetailVo;
+    }
 
     //保存或更新公寓信息
     @Override

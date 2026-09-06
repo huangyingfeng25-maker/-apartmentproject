@@ -18,4 +18,7 @@ public interface ApartmentInfoService extends IService<ApartmentInfo> {
 
     //保存或更新公寓信息
     void saveOrUpdateApartment(ApartmentSubmitVo apartmentSubmitVo);
+
+    //根据ID获取公寓详细信息
+    ApartmentDetailVo getDetailById(Long id);
 }

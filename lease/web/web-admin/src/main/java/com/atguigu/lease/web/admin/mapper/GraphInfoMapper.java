@@ -15,6 +15,8 @@ import java.util.List;
 */
 public interface GraphInfoMapper extends BaseMapper<GraphInfo> {
 
+    //根据公寓id查询图片数据
+    List<GraphVo> selectGraphListByApartmentId(ItemType itemType, Long id);
 }
 
 
