@@ -30,7 +30,8 @@ import java.util.List;
 @Service
 public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, ApartmentInfo>
         implements ApartmentInfoService {
-
+    @Autowired
+    private RoomInfoService roomInfoService;
     @Autowired
     private ApartmentInfoMapper apartmentInfoMapper;
     @Autowired
@@ -86,6 +87,45 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
     public IPage<ApartmentItemVo> selectApartmentInfoPage(Page<ApartmentItemVo> page, ApartmentQueryVo queryVo) {
         IPage<ApartmentItemVo> pageModel = apartmentInfoMapper.selectApartmentInfoPage(page,queryVo);
         return pageModel;
+    }
+
+    //根据id删除公寓信息
+    @Override
+    public void removeApartmentInfo(Long id) {
+
+        //判断如果公寓下面有房间，不能直接删除公寓  room_info
+        //根据公寓id查询room_info表，看公寓在这个表是否存在房间信息
+        LambdaQueryWrapper<RoomInfo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(RoomInfo::getApartmentId,id);
+        //select count(*) from room_info where apartment_id=911
+        long count = roomInfoService.count(wrapper);
+        if(count > 0) { //存在房间信息
+            throw new RuntimeException("存在房间信息，不能删除");
+        }
+
+        //删除公寓基本信息
+        this.removeById(id);
+
+        //删除公寓配套数据
+        LambdaQueryWrapper<ApartmentFacility> wrapper01 = new LambdaQueryWrapper<>();
+        wrapper01.eq(ApartmentFacility::getApartmentId,id);
+        apartmentFacilityService.remove(wrapper01);
+
+        //删除ApartmentLabel
+        LambdaQueryWrapper<ApartmentLabel> labelQueryWrapper = new LambdaQueryWrapper<>();
+        labelQueryWrapper.eq(ApartmentLabel::getApartmentId, id);
+        apartmentLabelService.remove(labelQueryWrapper);
+
+        //删除ApartmentFeeValue
+        LambdaQueryWrapper<ApartmentFeeValue> feeQueryWrapper = new LambdaQueryWrapper<>();
+        feeQueryWrapper.eq(ApartmentFeeValue::getApartmentId, id);
+        apartmentFeeValueService.remove(feeQueryWrapper);
+
+        //删除GraphInfo
+        LambdaQueryWrapper<GraphInfo> graphQueryWrapper = new LambdaQueryWrapper<>();
+        graphQueryWrapper.eq(GraphInfo::getItemType, ItemType.APARTMENT);
+        graphQueryWrapper.eq(GraphInfo::getItemId, id);
+        graphInfoService.remove(graphQueryWrapper);
     }
 
     //保存或更新公寓信息

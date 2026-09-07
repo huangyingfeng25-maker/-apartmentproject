@@ -24,4 +24,7 @@ public interface ApartmentInfoService extends IService<ApartmentInfo> {
 
     //根据条件分页查询公寓列表
     IPage<ApartmentItemVo> selectApartmentInfoPage(Page<ApartmentItemVo> page, ApartmentQueryVo queryVo);
+
+    //根据id删除公寓信息
+    void removeApartmentInfo(Long id);
 }
