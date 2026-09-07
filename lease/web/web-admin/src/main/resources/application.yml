@@ -22,6 +22,8 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath*:/mapper/**/*.xml
 
+springdoc:
+  default-flat-param-object: true
 minio:
   endpoint: http://192.168.200.130:9000
   accesskey: admin
