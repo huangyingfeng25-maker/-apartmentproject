@@ -2,9 +2,11 @@ package com.atguigu.lease.web.admin.service.impl;
 
 import com.atguigu.lease.model.entity.*;
 import com.atguigu.lease.model.enums.ItemType;
-import com.atguigu.lease.web.admin.mapper.RoomInfoMapper;
+import com.atguigu.lease.web.admin.mapper.*;
 import com.atguigu.lease.web.admin.service.*;
+import com.atguigu.lease.web.admin.vo.attr.AttrValueVo;
 import com.atguigu.lease.web.admin.vo.graph.GraphVo;
+import com.atguigu.lease.web.admin.vo.room.RoomDetailVo;
 import com.atguigu.lease.web.admin.vo.room.RoomItemVo;
 import com.atguigu.lease.web.admin.vo.room.RoomQueryVo;
 import com.atguigu.lease.web.admin.vo.room.RoomSubmitVo;
@@ -14,6 +16,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -47,6 +50,21 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
     private NativeWebRequest nativeWebRequest;
     @Autowired
     private RoomInfoMapper roomInfoMapper;
+    @Autowired
+    private ApartmentInfoService apartmentInfoService;
+    @Autowired
+    private FacilityInfoMapper facilityInfoMapper;
+    @Autowired
+    private GraphInfoMapper graphInfoMapper;
+    @Autowired
+    private AttrValueMapper attrValueMapper;
+    @Autowired
+    private LabelInfoMapper labelInfoMapper;
+    @Autowired
+    private PaymentTypeMapper paymentTypeMapper;
+    @Autowired
+    private LeaseTermMapper leaseTermMapper;
+
 
     //保存或更新房间信息
     @Override
@@ -190,6 +208,52 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
     @Override
     public IPage<RoomItemVo> selectRoomInfoPage(Page<RoomItemVo> page, RoomQueryVo queryVo) {
         return roomInfoMapper.selectRoomInfoPage(page,queryVo);
+    }
+
+    //根据id获取房间详细信息
+    @Override
+    public RoomDetailVo getDetailById(Long id) {
+        RoomInfo roomInfo = this.getById(id);
+
+        if(roomInfo == null){
+            return null;
+        }
+
+        //根据公寓id获取公寓信息
+        Long apartmentId = roomInfo.getApartmentId();
+        ApartmentInfo apartmentInfo = apartmentInfoService.getById(apartmentId);
+
+        //根据房间id获取配套数据
+        List<FacilityInfo> facilityInfoList = facilityInfoMapper.findFacilityListByRoomId(id);
+
+        //根据 id获取图片部分
+        List<GraphVo> graphVoList = graphInfoMapper.selectGraphListByRoomId(ItemType.ROOM,id);
+
+        //其他获取代码
+        //4.查询attrValueList
+        List<AttrValueVo> attrvalueVoList = attrValueMapper.selectListByRoomId(id);
+
+        //6.查询labelInfoList
+        List<LabelInfo> labelInfoList = labelInfoMapper.selectListByRoomId(id);
+
+        //7.查询paymentTypeList
+        List<PaymentType> paymentTypeList = paymentTypeMapper.selectListByRoomId(id);
+
+        //8.查询leaseTermList
+        List<LeaseTerm> leaseTermList = leaseTermMapper.selectListByRoomId(id);
+
+        RoomDetailVo adminRoomDetailVo=new RoomDetailVo();
+        BeanUtils.copyProperties(roomInfo,adminRoomDetailVo);
+
+        adminRoomDetailVo.setApartmentInfo(apartmentInfo);
+        adminRoomDetailVo.setGraphVoList(graphVoList);
+        adminRoomDetailVo.setAttrValueVoList(attrvalueVoList);
+        adminRoomDetailVo.setFacilityInfoList(facilityInfoList);
+        adminRoomDetailVo.setLabelInfoList(labelInfoList);
+        adminRoomDetailVo.setPaymentTypeList(paymentTypeList);
+        adminRoomDetailVo.setLeaseTermList(leaseTermList);
+
+        return adminRoomDetailVo;
     }
 }
 

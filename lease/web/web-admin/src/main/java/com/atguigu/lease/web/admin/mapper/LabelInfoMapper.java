@@ -16,6 +16,8 @@ public interface LabelInfoMapper extends BaseMapper<LabelInfo> {
 
     //根据公寓id查询标签数据
     List<LabelInfo> findLabelListByApartmentId(Long id);
+
+    List<LabelInfo> selectListByRoomId(Long id);
 }
 
 

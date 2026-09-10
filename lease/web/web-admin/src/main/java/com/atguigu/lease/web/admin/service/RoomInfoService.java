@@ -22,6 +22,6 @@ public interface RoomInfoService extends IService<RoomInfo> {
     //根据条件分页查询房间列表
     IPage<RoomItemVo> selectRoomInfoPage(Page<RoomItemVo> page, RoomQueryVo queryVo);
 
-
-
+    //根据id获取房间详细信息
+    RoomDetailVo getDetailById(Long id);
 }

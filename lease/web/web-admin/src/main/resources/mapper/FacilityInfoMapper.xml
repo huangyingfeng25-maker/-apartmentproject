@@ -17,5 +17,18 @@
                      WHERE apartment_id=#{id}
                        AND is_deleted=0)
     </select>
+    <select id="findFacilityListByRoomId"
+            resultType="com.atguigu.lease.model.entity.FacilityInfo">
+        select id,
+               type,
+               name,
+               icon
+        from facility_info fi
+        where is_deleted =0 and fi.id in
+                (
+                select rf.facility_id from room_facility rf
+                 where is_deleted =0 and rf.room_id=#{id}
+             )
+    </select>
 
 </mapper>
