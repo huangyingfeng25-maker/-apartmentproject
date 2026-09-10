@@ -5,7 +5,6 @@ import com.atguigu.lease.web.admin.vo.room.RoomItemVo;
 import com.atguigu.lease.web.admin.vo.room.RoomQueryVo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 /**
 * @author liubo
@@ -15,8 +14,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 */
 public interface RoomInfoMapper extends BaseMapper<RoomInfo> {
 
-    //根据条件分页查询房间列表
-    IPage<RoomItemVo> selectRoomInfoPage(Page<RoomItemVo> page, RoomQueryVo queryVo);
 }
 
 
