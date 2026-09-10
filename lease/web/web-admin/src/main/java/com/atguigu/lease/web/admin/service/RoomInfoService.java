@@ -6,6 +6,7 @@ import com.atguigu.lease.web.admin.vo.room.RoomItemVo;
 import com.atguigu.lease.web.admin.vo.room.RoomQueryVo;
 import com.atguigu.lease.web.admin.vo.room.RoomSubmitVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -17,4 +18,10 @@ public interface RoomInfoService extends IService<RoomInfo> {
 
     //保存或更新房间信息
     void saveOrUpdateRoomInfo(RoomSubmitVo roomSubmitVo);
+
+    //根据条件分页查询房间列表
+    IPage<RoomItemVo> selectRoomInfoPage(Page<RoomItemVo> page, RoomQueryVo queryVo);
+
+
+
 }
