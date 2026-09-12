@@ -1,8 +1,11 @@
 package com.atguigu.lease.web.admin.mapper;
 
 import com.atguigu.lease.model.entity.LeaseAgreement;
+import com.atguigu.lease.web.admin.vo.agreement.AgreementQueryVo;
+import com.atguigu.lease.web.admin.vo.agreement.AgreementVo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 /**
 * @author liubo
@@ -12,6 +15,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 */
 public interface LeaseAgreementMapper extends BaseMapper<LeaseAgreement> {
 
+    //根据条件分页查询租约列表
+    IPage<AgreementVo> selectPageAgreement(Page<AgreementVo> page, AgreementQueryVo queryVo);
 }
 
 
