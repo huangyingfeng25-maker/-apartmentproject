@@ -7,6 +7,7 @@ import com.atguigu.lease.model.enums.BaseStatus;
 import com.atguigu.lease.web.admin.service.UserInfoService;
 import com.atguigu.lease.web.admin.vo.user.UserInfoQueryVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,6 +46,10 @@ public class UserInfoController {
     @Operation(summary = "根据用户id更新账号状态")
     @PostMapping("updateStatusById")
     public Result updateStatusById(@RequestParam Long id, @RequestParam BaseStatus status) {
+        LambdaUpdateWrapper<UserInfo> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(UserInfo::getId, id);
+        updateWrapper.set(UserInfo::getStatus, status);
+        userInfoService.update(updateWrapper);
         return Result.ok();
     }
 }
