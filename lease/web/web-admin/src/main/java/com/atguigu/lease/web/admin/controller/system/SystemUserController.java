@@ -57,6 +57,7 @@ public class SystemUserController {
     @DeleteMapping("deleteById")
     @Operation(summary = "根据ID删除后台用户信息")
     public Result removeById(@RequestParam Long id) {
+        service.removeById(id);
         return Result.ok();
     }
 
