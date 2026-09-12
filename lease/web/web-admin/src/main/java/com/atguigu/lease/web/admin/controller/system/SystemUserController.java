@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -47,10 +48,7 @@ public class SystemUserController {
     @Operation(summary = "保存或更新后台用户信息")
     @PostMapping("saveOrUpdate")
     public Result saveOrUpdate(@RequestBody SystemUser systemUser) {
-        if (systemUser.getPassword()!=null){
-            systemUser.setPassword(DigestUtils.md5DigestAsHex(systemUser.getPassword().getBytes()));
-        }
-        service.saveOrUpdate(systemUser);
+        service.saveOrUpdateUser(systemUser);
         return Result.ok();
     }
 

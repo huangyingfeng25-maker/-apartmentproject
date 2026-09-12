@@ -13,6 +13,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * @author liubo
@@ -42,6 +44,14 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SystemU
         BeanUtils.copyProperties(systemUser,systemUserItemVo);
         systemUserItemVo.setPostName(systemPost.getName());
         return systemUserItemVo;
+    }
+
+    @Override
+    public void saveOrUpdateUser(SystemUser systemUser) {
+        if(StringUtils.hasText(systemUser.getPassword())){
+            systemUser.setPassword(DigestUtils.md5DigestAsHex(systemUser.getPassword().getBytes()));
+        }
+        this.saveOrUpdate(systemUser);
     }
 }
 
