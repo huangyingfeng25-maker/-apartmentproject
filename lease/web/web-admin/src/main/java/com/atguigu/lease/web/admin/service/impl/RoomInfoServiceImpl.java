@@ -51,7 +51,7 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
     @Autowired
     private RoomInfoMapper roomInfoMapper;
     @Autowired
-    private ApartmentInfoService apartmentInfoService;
+    private ApartmentInfoMapper apartmentInfoMapper;
     @Autowired
     private FacilityInfoMapper facilityInfoMapper;
     @Autowired
@@ -221,7 +221,7 @@ public class RoomInfoServiceImpl extends ServiceImpl<RoomInfoMapper, RoomInfo>
 
         //根据公寓id获取公寓信息
         Long apartmentId = roomInfo.getApartmentId();
-        ApartmentInfo apartmentInfo = apartmentInfoService.getById(apartmentId);
+        ApartmentInfo apartmentInfo = apartmentInfoMapper.selectById(apartmentId);
 
         //根据房间id获取配套数据
         List<FacilityInfo> facilityInfoList = facilityInfoMapper.findFacilityListByRoomId(id);

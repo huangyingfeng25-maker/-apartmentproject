@@ -1,10 +1,14 @@
 package com.atguigu.lease.web.admin.service;
 
 import com.atguigu.lease.model.entity.ViewAppointment;
+import com.atguigu.lease.web.admin.mapper.ViewAppointmentMapper;
 import com.atguigu.lease.web.admin.vo.appointment.AppointmentQueryVo;
 import com.atguigu.lease.web.admin.vo.appointment.AppointmentVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
 * @author liubo
@@ -13,4 +17,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ViewAppointmentService extends IService<ViewAppointment> {
 
+    //分页查询预约信息
+    IPage<AppointmentVo> selectAppointmentPage(Page<AppointmentVo> page, AppointmentQueryVo queryVo);
 }

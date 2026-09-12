@@ -31,7 +31,7 @@ import java.util.List;
 public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, ApartmentInfo>
         implements ApartmentInfoService {
     @Autowired
-    private RoomInfoService roomInfoService;
+    private RoomInfoMapper roomInfoMapper;
     @Autowired
     private ApartmentInfoMapper apartmentInfoMapper;
     @Autowired
@@ -98,7 +98,7 @@ public class ApartmentInfoServiceImpl extends ServiceImpl<ApartmentInfoMapper, A
         LambdaQueryWrapper<RoomInfo> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(RoomInfo::getApartmentId,id);
         //select count(*) from room_info where apartment_id=911
-        long count = roomInfoService.count(wrapper);
+        long count = roomInfoMapper.selectCount(wrapper);
         if(count > 0) { //存在房间信息
             throw new RuntimeException("存在房间信息，不能删除");
         }
