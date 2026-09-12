@@ -8,12 +8,14 @@ import com.atguigu.lease.model.enums.BaseStatus;
 import com.atguigu.lease.web.admin.service.SystemUserService;
 import com.atguigu.lease.web.admin.vo.system.user.SystemUserItemVo;
 import com.atguigu.lease.web.admin.vo.system.user.SystemUserQueryVo;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -45,13 +47,20 @@ public class SystemUserController {
     @Operation(summary = "保存或更新后台用户信息")
     @PostMapping("saveOrUpdate")
     public Result saveOrUpdate(@RequestBody SystemUser systemUser) {
+        if (systemUser.getPassword()!=null){
+            systemUser.setPassword(DigestUtils.md5DigestAsHex(systemUser.getPassword().getBytes()));
+        }
+        service.saveOrUpdate(systemUser);
         return Result.ok();
     }
 
     @Operation(summary = "判断后台用户名是否可用")
     @GetMapping("isUserNameAvailable")
     public Result<Boolean> isUsernameExists(@RequestParam String username) {
-        return Result.ok();
+        LambdaQueryWrapper<SystemUser> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SystemUser::getUsername,username);
+        long count = service.count(wrapper);
+        return Result.ok(count == 0);
     }
 
     @DeleteMapping("deleteById")
