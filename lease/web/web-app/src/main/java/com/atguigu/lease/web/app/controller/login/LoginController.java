@@ -6,24 +6,31 @@ import com.atguigu.lease.web.app.vo.user.LoginVo;
 import com.atguigu.lease.web.app.vo.user.UserInfoVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @Tag(name = "登录管理")
 @RequestMapping("/app/")
 public class LoginController {
 
+    @Autowired
+    private LoginService loginService;
+
     @GetMapping("login/getCode")
     @Operation(summary = "获取短信验证码")
     public Result getCode(@RequestParam String phone) {
+        loginService.getCode(phone);
         return Result.ok();
     }
 
     @PostMapping("login")
     @Operation(summary = "登录")
     public Result<String> login(@RequestBody LoginVo loginVo) {
-        return Result.ok();
+        String token = loginService.loginUser(loginVo);
+        return Result.ok(token);
     }
 
     @GetMapping("info")
