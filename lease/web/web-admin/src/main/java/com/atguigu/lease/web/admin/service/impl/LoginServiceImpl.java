@@ -1,5 +1,7 @@
 package com.atguigu.lease.web.admin.service.impl;
 
+import com.atguigu.lease.common.exception.LeaseException;
+import com.atguigu.lease.common.result.ResultCodeEnum;
 import com.atguigu.lease.common.utils.JwtUtil;
 import com.atguigu.lease.model.entity.SystemUser;
 import com.atguigu.lease.model.enums.BaseStatus;
@@ -57,19 +59,19 @@ public class LoginServiceImpl implements LoginService {
         String input_captchaCode = loginVo.getCaptchaCode();
         //2 判断验证码是否为空，如果为空，提示用户
         if (!StringUtils.hasText(input_captchaCode)){
-            throw new RuntimeException();
+            throw new LeaseException("验证码为空",202);
         }
         //3 如果验证码不为空，从redis根据loginVo里面key获取redis存储验证码
         String captchaKey = loginVo.getCaptchaKey();
         String redis_captchaCode = redisTemplate.opsForValue().get(captchaKey);
         //4 如果根据key获取redis验证码为空，提示用户
         if(!StringUtils.hasText(redis_captchaCode)) {
-            throw new RuntimeException();
+            throw new LeaseException("验证码为空",208);
         }
         //5 如果根据key获取redis验证码不为空，校验验证码
         // 把redis的验证码 和 输入的验证码比对，如果不同，提示用户
         if(!redis_captchaCode.equals(input_captchaCode)){
-            throw new RuntimeException();
+            throw new LeaseException("数据获取为空",203);
         }
         //6 根据loginVo里面用户名查询数据库，如果查询结果为空，提示用户
         String input_username = loginVo.getUsername();
@@ -77,11 +79,11 @@ public class LoginServiceImpl implements LoginService {
         wrapper.eq(SystemUser::getUsername,input_username);
         SystemUser systemUser = systemUserMapper.selectOne(wrapper);
         if(systemUser == null) {
-            throw new RuntimeException();
+            throw new LeaseException(ResultCodeEnum.APP_LOGIN_CODE_ERROR);
         }
         //7 如果查询结果不为空，判断用户是否被禁用，如果被禁用，提示用户
         if(systemUser.getStatus()== BaseStatus.DISABLE){
-            throw new RuntimeException();
+            throw new LeaseException("该用户被禁用",205);
         }
         //8 如果用户没有禁用，比较密码
         // 把数据库存储密码 和输入的密码比对，输入密码进行加密之后再比对
@@ -90,7 +92,7 @@ public class LoginServiceImpl implements LoginService {
         //输入密码加密
         String input_password_md5 = DigestUtils.md5Hex(input_password);
         if(!database_password.equals(input_password_md5)){
-            throw new RuntimeException();
+            throw new LeaseException("密码错误",207);
         }
         //10 使用jwt生成token，返回token
         String token = JwtUtil.createToken(systemUser.getId(), systemUser.getUsername());
