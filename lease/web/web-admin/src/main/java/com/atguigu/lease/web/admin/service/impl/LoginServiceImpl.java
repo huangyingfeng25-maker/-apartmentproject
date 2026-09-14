@@ -5,7 +5,7 @@ import com.atguigu.lease.common.result.ResultCodeEnum;
 import com.atguigu.lease.common.utils.JwtUtil;
 import com.atguigu.lease.model.entity.SystemUser;
 import com.atguigu.lease.model.enums.BaseStatus;
-import com.atguigu.lease.web.admin.controller.constant.RedisConstant;
+import com.atguigu.lease.common.constant.RedisConstant;
 import com.atguigu.lease.web.admin.mapper.SystemUserMapper;
 import com.atguigu.lease.web.admin.service.LoginService;
 import com.atguigu.lease.web.admin.vo.login.CaptchaVo;

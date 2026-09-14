@@ -25,8 +25,7 @@ public class ScheduleTask {
     private LeaseAgreementService leaseAgreementService;
 
     //每天晚上八点，查询哪些出租过期了，更新租约状态
-    //@Scheduled(cron = "0 0 20 * * ? ")
-    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(cron = "0 0 20 * * ?")
     public void updateLeaseStatus() {
         LambdaUpdateWrapper<LeaseAgreement> wrapper=new LambdaUpdateWrapper<>();
         wrapper.in(LeaseAgreement::getStatus, LeaseStatus.SIGNED,LeaseStatus.WITHDRAWING);

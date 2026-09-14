@@ -1,4 +1,4 @@
-package com.atguigu.lease.web.admin.controller.constant;
+package com.atguigu.lease.common.constant;
 
 public class RedisConstant {
     public static final String ADMIN_LOGIN_PREFIX = "admin:login:";
