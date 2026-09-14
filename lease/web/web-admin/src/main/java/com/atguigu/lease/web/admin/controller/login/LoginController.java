@@ -1,13 +1,18 @@
 package com.atguigu.lease.web.admin.controller.login;
 
 
+import com.atguigu.lease.common.context.LoginUser;
+import com.atguigu.lease.common.context.LoginUserContext;
 import com.atguigu.lease.common.result.Result;
+import com.atguigu.lease.common.utils.JwtUtil;
 import com.atguigu.lease.web.admin.service.LoginService;
 import com.atguigu.lease.web.admin.vo.login.CaptchaVo;
 import com.atguigu.lease.web.admin.vo.login.LoginVo;
 import com.atguigu.lease.web.admin.vo.system.user.SystemUserInfoVo;
+import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +40,12 @@ public class LoginController {
 
     @Operation(summary = "获取登陆用户个人信息")
     @GetMapping("info")
-    public Result<SystemUserInfoVo> info() {
+    public Result<SystemUserInfoVo> info(HttpServletRequest request) {
+//        String token = request.getHeader("access-token");
+//        Claims claims = JwtUtil.parseToken(token);
+//        Long userId = claims.get("userId", Long.class);
+        LoginUser loginUser = LoginUserContext.getLoginUser();
+        Long userId = loginUser.getUserId();
         return Result.ok();
     }
 }

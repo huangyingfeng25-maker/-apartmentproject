@@ -1,6 +1,8 @@
 package com.atguigu.lease.web.admin.Interceptor;
 
 
+import com.atguigu.lease.common.context.LoginUser;
+import com.atguigu.lease.common.context.LoginUserContext;
 import com.atguigu.lease.common.utils.JwtUtil;
 import com.atguigu.lease.model.entity.SystemUser;
 import com.atguigu.lease.model.enums.BaseStatus;
@@ -10,6 +12,7 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -36,6 +39,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
             //4 解析token成功之后，根据userId查询数据库，用户是否正常
             Long userId = ((Number) claims.get("userId")).longValue();
+            String username = claims.get("username", String.class);
             LambdaQueryWrapper<SystemUser> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(SystemUser::getId, userId);
             SystemUser systemUser = systemUserMapper.selectOne(wrapper);
@@ -43,7 +47,20 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             if (systemUser == null || systemUser.getStatus() == BaseStatus.DISABLE) {
                 throw new RuntimeException();
             }
+
+            //把userId放到ThreadLocal里面
+            LoginUser loginUser=new LoginUser();
+            loginUser.setUserId(userId);
+            loginUser.setUsername(username);
+            LoginUserContext.setLoginUser(loginUser);
         }
         return true;
+    }
+    @Override
+    public void afterCompletion(HttpServletRequest request,
+                                HttpServletResponse response,
+                                Object handler,
+                                @Nullable Exception ex) throws Exception {
+        LoginUserContext.clear();
     }
 }
